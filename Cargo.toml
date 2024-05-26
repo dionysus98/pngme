@@ -2,6 +2,7 @@
 name = "naomi"
 version = "0.1.0"
 edition = "2021"
+authors = ["Avy Sridhar"]
 
 [dependencies]
-anyhow = "1.0.86"
+crc = "3.2.1"

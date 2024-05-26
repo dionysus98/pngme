@@ -1,16 +1,16 @@
-use anyhow::Ok;
 use std::{fmt, str::FromStr};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct ChunkType([u8; 4]);
+pub struct ChunkType(pub [u8; 4]);
 
+#[allow(unused)]
 impl ChunkType {
-    pub fn bytes(self) -> [u8; 4] {
-        self.0
+    pub fn new(val: &[u8]) -> Self {
+        Self(val.try_into().expect("Invalid val"))
     }
 
-    pub fn to_string(self) -> String {
-        String::from_utf8(self.0.to_vec()).ok().unwrap()
+    pub fn bytes(self) -> [u8; 4] {
+        self.0
     }
 
     pub fn is_critical(self) -> bool {
@@ -37,28 +37,28 @@ impl TryFrom<[u8; 4]> for ChunkType {
         if arg.into_iter().all(|v| v.is_ascii_alphabetic()) {
             Ok(Self(arg))
         } else {
-            Err(anyhow::Error::msg("Invalid PNG constructed"))
+            Err("Invalid PNG constructed")
         }
     }
 
-    type Error = anyhow::Error;
+    type Error = &'static str;
 }
 
 impl FromStr for ChunkType {
-    type Err = anyhow::Error;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s.chars().all(|v| v.is_ascii_alphabetic()) {
             Ok(Self(s.as_bytes().try_into().ok().unwrap()))
         } else {
-            Err(anyhow::Error::msg("Invalid PNG constructed"))
+            Err("Invalid PNG constructed")
         }
     }
 }
 
 impl fmt::Display for ChunkType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.to_string())
+        write!(f, "{}", String::from_utf8(self.0.to_vec()).ok().unwrap())
     }
 }
 

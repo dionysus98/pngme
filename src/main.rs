@@ -1,4 +1,5 @@
 mod args;
+mod crc;
 mod chunk;
 mod chunk_type;
 mod commands;
