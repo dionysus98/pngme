@@ -33,7 +33,8 @@ impl TryFrom<&Vec<u8>> for Chunk {
 impl fmt::Display for Chunk {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
-            f,"\x1b[93m- length {}\n- crc    {}\n- type   {}\n- data   {}\x1b[0m",
+            f,
+            "\x1b[93m- length {}\n- crc    {}\n- type   {}\n- data   {}\x1b[0m",
             self.length(),
             self.crc(),
             self.chunk_type().to_string(),
@@ -64,8 +65,21 @@ impl Chunk {
         self.ctype
     }
 
-    fn data_as_string(&self) -> Option<String> {
+    pub fn type_as_string(&self) -> Option<String> {
+        String::from_utf8(self.chunk_type().0.to_vec()).ok()
+    }
+
+    pub fn data_as_string(&self) -> Option<String> {
         String::from_utf8(self.data.clone()).ok()
+    }
+
+    pub fn as_bytes(self) -> Vec<u8> {
+        let l = self.length.clone().to_vec();
+        let ct = self.chunk_type().bytes().clone().to_vec();
+        let d = self.data.clone();
+        let crc = self.crc.clone().to_vec();
+
+        [l, ct, d, crc].concat()
     }
 
     pub fn new(ctype: ChunkType, data: Vec<u8>) -> Self {
@@ -216,7 +230,7 @@ mod tests {
             .copied()
             .collect();
 
-        let chunk: Chunk = TryFrom::try_from(chunk_data.as_ref()).unwrap();        
+        let chunk: Chunk = TryFrom::try_from(chunk_data.as_ref()).unwrap();
         let _chunk_string = format!("{}", chunk);
     }
 }
