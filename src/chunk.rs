@@ -10,15 +10,16 @@ pub struct Chunk {
     crc: [u8; 4],
 }
 
-impl TryFrom<&Vec<u8>> for Chunk {
+impl TryFrom<&[u8]> for Chunk {
     type Error = &'static str;
 
-    fn try_from(value: &Vec<u8>) -> Result<Self, Self::Error> {
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
         let sep_at = 4;
         let (_, value) = value.split_at(sep_at);
         let (ctype, value) = value.split_at(sep_at);
         let next_split = value.len() - sep_at;
         let (data, crc) = value.split_at(next_split);
+        let (crc, _) = crc.split_at(sep_at);
 
         let new = Self::new(ChunkType::new(ctype), data.into());
 
@@ -86,7 +87,7 @@ impl Chunk {
         let length = Self::to_bytes(data.len());
         let type_with_data = [ctype.0.as_slice(), data.clone().as_slice()].concat();
         let crc = Crc::<u32>::new(&crc::CRC_32_ISO_HDLC);
-        let crc = Crc::<u32>::checksum(&crc, &type_with_data);
+        let crc = crc.checksum(&type_with_data);
         let crc = Self::to_bytes(crc as usize);
         Self {
             data,
