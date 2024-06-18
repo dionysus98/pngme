@@ -1,5 +1,5 @@
+use std::env;
 mod args;
-mod crc;
 mod chunk;
 mod chunk_type;
 mod commands;
@@ -9,5 +9,7 @@ pub type Error = Box<dyn std::error::Error>;
 pub type Result<T> = std::result::Result<T, Error>;
 
 fn main() -> Result<()> {
-    todo!()
+    let args = args::parse_args(env::args().collect::<Vec<String>>());
+    dbg!(args);
+    Ok(())
 }

@@ -32,7 +32,7 @@ impl TryFrom<&Vec<u8>> for Chunks {
                     if let Ok(chunk) = Chunk::try_from(chunk) {
                         chunks.push(chunk);
                     };
-                    // Please change this, dont be an dick.
+                    // Please change this, dont be a dick.
                     bytes_reel.reverse();
                     bytes_reel.truncate(bytes_reel.len() - chunk_len);
                     bytes_reel.reverse();
@@ -143,7 +143,6 @@ mod tests {
     use crate::chunk::Chunk;
     use crate::chunk_type::ChunkType;
     use std::convert::TryFrom;
-    use std::str::FromStr;
 
     fn testing_png() -> Png {
         let chunks = testing_chunks();

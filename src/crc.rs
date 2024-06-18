@@ -28,14 +28,12 @@ fn make_crc_table(mut crc: CRC) -> CRC {
 }
 
 fn update_crc(table: CRC, crca: u32, buf: &[u8], len: u8) -> u32 {
-    let mut c = crca;
-    // println!("{crca}");
+    let mut c = crca;    
     for n in 0..len {
         let ch = buf[n as usize] as u32;
         let pos = ((c ^ ch) & 0xff) as usize;
         let tbl = table.0[pos] as u32;
-        c = tbl ^ (c >> 8);
-        // println!("{c}");
+        c = tbl ^ (c >> 8);        
     }
     c
 }
