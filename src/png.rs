@@ -26,15 +26,16 @@ impl TryFrom<&Vec<u8>> for Chunks {
 
         while !bytes_reel.is_empty() {
             if let Some(len) = bytes_reel.get(0..4) {
-                let body_len = u32::from_be_bytes(len.try_into().ok().unwrap());
-                let chunk_len = 12 + body_len as usize;
-                if let Some(chunk) = bytes_reel.get(0..chunk_len) {
+                let body_len = u32::from_be_bytes(len.try_into().ok().unwrap()) as usize;
+                let meta_len = (Chunk::LENGTH_SIZE + Chunk::TYPE_SIZE + Chunk::CRC_SIZE) as usize;
+                let total_len = meta_len + body_len;
+                if let Some(chunk) = bytes_reel.get(0..total_len) {
                     if let Ok(chunk) = Chunk::try_from(chunk) {
                         chunks.push(chunk);
                     };
                     // Please change this, dont be a dick.
                     bytes_reel.reverse();
-                    bytes_reel.truncate(bytes_reel.len() - chunk_len);
+                    bytes_reel.truncate(bytes_reel.len() - total_len);
                     bytes_reel.reverse();
                 } else {
                     bytes_reel.clear();
@@ -77,7 +78,7 @@ impl fmt::Display for Png {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(non_snake_case, unused)]
 impl Png {
     pub const STANDARD_HEADER: [u8; 8] = [137, 80, 78, 71, 13, 10, 26, 10];
 
@@ -117,7 +118,7 @@ impl Png {
         self.body
             .chunks
             .iter()
-            .filter(|c| c.type_as_string().unwrap_or_default() == ctype)
+            .filter(|c| c.type_as_string().unwrap_or_default() == ctype.to_owned())
             .next()
             .cloned()
     }

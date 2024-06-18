@@ -64,7 +64,7 @@ pub fn parse_args(args: Vec<String>) -> Args {
                         message: None,
                     }
                 } else {
-                    panic!("\nDeocde command needs path and chunk type\n")
+                    panic!("\n{:?} command needs path and chunk type\n", command)
                 }
             }
             Command::Print => {

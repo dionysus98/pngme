@@ -46,6 +46,10 @@ impl fmt::Display for Chunk {
 
 #[allow(unused)]
 impl Chunk {
+    pub const LENGTH_SIZE: u8 = 4;
+    pub const TYPE_SIZE: u8 = 4;
+    pub const CRC_SIZE: u8 = 4;
+
     pub fn to_u32(v: [u8; 4]) -> u32 {
         u32::from_be_bytes(v)
     }

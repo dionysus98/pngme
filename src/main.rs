@@ -10,6 +10,6 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 fn main() -> Result<()> {
     let args = args::parse_args(env::args().collect::<Vec<String>>());
-    dbg!(args);
+    commands::process(args)?;
     Ok(())
 }
